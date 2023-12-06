@@ -10,7 +10,7 @@ function App() {
   const [filter, setFilter] = useState('default');
 
 
-  const dataurl = "http://www.omdbapi.com/?apikey=6098a450&s=default"
+  const dataurl = "https://www.omdbapi.com/?apikey=6098a450&s=default"
   // 6098a450
 
   useEffect(() => {
@@ -24,7 +24,7 @@ function App() {
   },[])
 
   const getMovieImg = async (id) => {
-    const imageUrl = `https://img.omdbapi.com/?i=${id}&apikey=6098a450`;
+    const imageUrl = `httpss://img.omdbapi.com/?i=${id}&apikey=6098a450`;
     //console.log(imageUrl)
     try {
       const response = await fetch(imageUrl);
@@ -38,7 +38,7 @@ function App() {
         return objectUrl;
       } else {
         // Error al obtener laa imagen -> no existe 
-        return 'https://img3.stockfresh.com/files/b/blotty/m/28/489019_stock-photo-film-slate-with-movie-film-reel.jpg';
+        return 'httpss://img3.stockfresh.com/files/b/blotty/m/28/489019_stock-photo-film-slate-with-movie-film-reel.jpg';
       }
     } catch (error) {
       // No obtuve algo
@@ -49,7 +49,7 @@ function App() {
   // Busqueda automatica
   useEffect(() => {
     const getDataMoviesByFilter = async () => {
-      const filterurl = `http://www.omdbapi.com/?apikey=6098a450&s=${filter}`
+      const filterurl = `https://www.omdbapi.com/?apikey=6098a450&s=${filter}`
       const response = await fetch(filterurl)
       const data = await response.json()
       //console.log(filter)
@@ -88,7 +88,7 @@ function App() {
   const handleSearch = () => {
     // Llama a la función de búsqueda pasando la consulta
     const getMovieDetails = async () => {
-      const movieDetailsUrl = `http://www.omdbapi.com/?apikey=6098a450&t=${filter}`;
+      const movieDetailsUrl = `https://www.omdbapi.com/?apikey=6098a450&t=${filter}`;
       const response = await fetch(movieDetailsUrl);
       const data = await response.json();
 
