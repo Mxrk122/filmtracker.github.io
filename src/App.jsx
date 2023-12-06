@@ -24,7 +24,7 @@ function App() {
   },[])
 
   const getMovieImg = async (id) => {
-    const imageUrl = `httpss://img.omdbapi.com/?i=${id}&apikey=6098a450`;
+    const imageUrl = `https://img.omdbapi.com/?i=${id}&apikey=6098a450`;
     //console.log(imageUrl)
     try {
       const response = await fetch(imageUrl);
@@ -38,7 +38,7 @@ function App() {
         return objectUrl;
       } else {
         // Error al obtener laa imagen -> no existe 
-        return 'httpss://img3.stockfresh.com/files/b/blotty/m/28/489019_stock-photo-film-slate-with-movie-film-reel.jpg';
+        return 'https://img3.stockfresh.com/files/b/blotty/m/28/489019_stock-photo-film-slate-with-movie-film-reel.jpg';
       }
     } catch (error) {
       // No obtuve algo
