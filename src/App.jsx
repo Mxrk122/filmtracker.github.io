@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import SearchBar from './Components/SearchBar';
 import Movie from './Components/Movie';
+import { useDataMovies } from './hooks/useDataMovies'
+import { useFilter  } from './hooks/useFilter';
 import './styles/App.css'
 
 
 
 function App() {
-  const [dataMovies, setDataMovies] = useState([]);
-  const [filter, setFilter] = useState('default');
 
-
+  const { filter, updateFilter } = useFilter('default');
   const dataurl = "https://www.omdbapi.com/?apikey=6098a450&s=default"
   // 6098a450
 
@@ -17,8 +17,8 @@ function App() {
       const getDataMovies = async () => {
         const response = await fetch(dataurl)
         const data = await response.json()
-        setDataMovies(data.Search)
-        console.log(data.Search)
+        updateDataMovies(data.Search)
+        // console.log(data.Search)
       }
       getDataMovies()
   },[])
@@ -33,7 +33,7 @@ function App() {
       if (response.ok) {
         const data = await response.blob();
         const objectUrl = URL.createObjectURL(data);
-        console.log('Imagen obtenida:', objectUrl);
+        // console.log('Imagen obtenida:', objectUrl);
         // DEvolver el bloburl
         return objectUrl;
       } else {
@@ -46,44 +46,7 @@ function App() {
     }
   };
 
-  // Busqueda automatica
-  useEffect(() => {
-    const getDataMoviesByFilter = async () => {
-      const filterurl = `https://www.omdbapi.com/?apikey=6098a450&s=${filter}`
-      const response = await fetch(filterurl)
-      const data = await response.json()
-      //console.log(filter)
-      const r = data.Response
-      //console.log(data)
-      if (r !== 'False') {
-        // console.log('Resultado de la búsqueda:', data.Search);
-        // obtener todas las url de las imagenes
-        const promisesArray = data.Search.map(async (item) => {
-          return getMovieImg(item.imdbID);
-        });
-
-        const resolvedUrls = await Promise.all(promisesArray);
-
-        // asignar url de imagenes al array obtenido por la Api
-        const moviesCompleteInfo = data.Search.map((item, index) => ({
-          ...item, // Copia todas las propiedades existentes del objeto JSON original
-          imageUrl: resolvedUrls[index], // Agrega la nueva propiedad "imageUrl" con la URL resuelta
-        }));
-
-        // ahora tenemos el array con las imagenes incluidas
-        setDataMovies(moviesCompleteInfo)
-      } else {
-        
-        //console.log('La búsqueda no devolvió resultados');
-      }
-    }
-    // Agregar retraso para debounce
-      const timeoutId = setTimeout(() => {
-        getDataMoviesByFilter();
-      }, 500);
-
-      return () => clearTimeout(timeoutId);
-  } ,[filter])
+  const { dataMovies, updateDataMovies } = useDataMovies(filter, getMovieImg)
 
   const handleSearch = () => {
     // Llama a la función de búsqueda pasando la consulta
@@ -103,11 +66,11 @@ function App() {
           imageUrl: imageUrl,
         };
     
-        setDataMovies([movieDetails])
+        updateDataMovies([movieDetails])
       } else {
         // si no se devuelven resultados renderizar codigo de error
         console.log('La búsqueda no devolvió resultados');
-        setDataMovies(null)
+        updateDataMovies(null)
       }
     };
 
@@ -121,7 +84,7 @@ function App() {
     <div className='main'>
       <h1>FilmTracker</h1>
       {dataMovies ? null : <strong>No encontramos peliculas que coincidan con la busqueda :(</strong>}
-      <SearchBar setFilter={setFilter} handleSearch={handleSearch} />
+      <SearchBar setFilter={updateFilter} handleSearch={handleSearch} />
       <div className="results-container">
           {dataMovies ? (
             dataMovies.map((item) => (
